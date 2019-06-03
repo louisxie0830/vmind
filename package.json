@@ -11,6 +11,10 @@
   },
   "dependencies": {
     "core-js": "^2.6.5",
+    "emotion": "^10.0.9",
+    "html2canvas": "^1.0.0-rc.3",
+    "md5": "^2.2.1",
+    "normalize.css": "^8.0.1",
     "register-service-worker": "^1.6.2",
     "vue": "^2.6.10",
     "vue-router": "^3.0.3",
