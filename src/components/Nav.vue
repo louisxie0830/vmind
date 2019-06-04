@@ -4,58 +4,62 @@
       <ToolButton
         :icon="'add-item-alt'"
         :children="'新建'"
-        @click.prevent="handleNewFile"
+        :onClick="handleNewFile"
       />
       <ToolButton
         :icon="'folder-open'"
         :children="'打開'"
-        @click.prevent="handleOpenFile"
+        :onClick="handleOpenFile"
       />
       <ToolButton
         :icon="'file-download'"
         :children="'下載'"
-        @click.prevent="handleDownload"
+        :onClick="handleDownload"
       />
       <ToolButton
         :icon="'duplicate'"
         :children="'匯出'"
-        @click.prevent="handleExport"
+        :onClick="handleExport"
       />
-      <ToolButton
-        :icon="'palette'"
-        :children="'主題'"
-        @click.prevent="handleTheme"
-      />
+      <ToolButton :icon="'palette'" :children="'主題'" :onClick="handleTheme" />
     </section>
     <section class="section">
       <ToolButton
         :icon="'undo'"
         :children="'上一步'"
         :disabled="disableStepUp"
-        @click.prevent="handleUndo"
+        :onClick="handleUndo"
       />
       <ToolButton
         :icon="'redo'"
         :children="'下一步'"
         :disabled="disableNext"
-        @click.prevent="handleRedo"
+        :onClick="handleRedo"
       />
       <ToolButton
         :icon="'scale'"
         :children="'全部展開'"
-        @click.prevent="handleExpand"
+        :onClick="handleExpand"
       />
     </section>
+    <Popup
+      :component-type="popup"
+      :handleClosePopup="handleClosePopup"
+      :handleDownload="handleDownload"
+    />
   </nav>
 </template>
 
 <script>
 import ToolButton from "./ToolButton";
+import Popup from "./Popup/Popup.vue";
+import * as popupType from "./Popup/common/popupType";
+
 export default {
-  components: { ToolButton },
+  components: { ToolButton, Popup },
   data() {
     return {
-      popup: false
+      popup: popupType.NONE
     };
   },
   computed: {
@@ -64,10 +68,18 @@ export default {
     },
     disableNext() {
       return false;
+    },
+    showPopUp() {
+      return this.popup !== popupType.NONE;
     }
   },
   methods: {
-    handleNewFile() {},
+    handleClosePopup() {
+      this.popup = popupType.NONE;
+    },
+    handleNewFile() {
+      this.popup = popupType.NEW;
+    },
     handleOpenFile() {},
     handleDownload() {},
     handleExport() {},

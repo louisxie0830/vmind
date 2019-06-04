@@ -1,5 +1,5 @@
 <template>
-  <button :class="buttonClass" disabled="disabled">
+  <button :class="buttonClass" :disabled="disabled" @click.prevent="onClick()">
     <i :class="iconClass" />
     <span> {{ children }}</span>
   </button>
@@ -33,7 +33,6 @@ export default {
       const wrapper = css`
         margin: 0 0.12em;
         padding: 0 0.24em;
-        /* margin 用于增加间隔，padding 用于增大可点击区域 */
         background-color: transparent;
         border: none;
         outline: none;

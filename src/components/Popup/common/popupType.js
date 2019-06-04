@@ -1,5 +1,5 @@
-export const NONE = "none";
-export const NEW = "new";
-export const OPEN = "open";
-export const EXPORT = "export";
-export const THEME = "theme";
+export const NONE = "None";
+export const NEW = "New";
+export const OPEN = "Open";
+export const EXPORT = "Export";
+export const THEME = "Theme";
