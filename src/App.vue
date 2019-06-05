@@ -28,10 +28,6 @@ export default {
       getHistory: "getHistory"
     })
   },
-  created() {
-    console.log("this.getGlobal: ", this.getGlobal);
-    console.log("this.getNodeStatus: ", this.getNodeStatus);
-    console.log("this.getHistory: ", this.getHistory);
-  }
+  created() {}
 };
 </script>

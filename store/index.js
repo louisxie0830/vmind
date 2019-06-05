@@ -148,7 +148,7 @@ const actions = {
   selectNode({ dispatch }, param) {
     dispatch("node/setSelect", {
       curSelect: param.nodeId,
-      selectByClick: false,
+      selectByClick: param.selectByClick || false,
       curEdit: "",
       curNodeInfo: {}
     });
@@ -168,8 +168,8 @@ const actions = {
     });
   },
 
-  clearNodeStatus({ dispatch }) {
-    dispatch("node/clearAll");
+  clearNodeStatus({ dispatch }, param) {
+    dispatch("node/clearAll", param);
   },
 
   setMindMap({ dispatch }, param) {

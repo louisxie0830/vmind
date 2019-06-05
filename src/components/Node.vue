@@ -13,7 +13,11 @@
       :nodeId="node.id"
       :children="node.text"
     />
-    <div class="dropArea" :data-tag="refer.DROP_AREA" />
+    <div
+      class="dropArea"
+      :data-tag="refer.DROP_AREA"
+      @click="handleSelectNode"
+    />
     <p v-text="node.text" />
     <button
       :class="toggleButtonClass"
@@ -35,12 +39,14 @@ import * as refer from "../../statics/refer.js";
 import { mapGetters } from "vuex";
 import InputDiv from "./InputDiv";
 import Toolbar from "./Toolbar";
+import { mapActions } from "vuex";
 
 export default {
   components: {
     InputDiv,
     Toolbar
   },
+
   props: {
     layer: {
       type: Number,
@@ -189,17 +195,36 @@ export default {
   created() {
     this.$nextTick(() => {
       this.nodeRefs.add(this.$refs.node);
-      if (this.nodeStatus.curSelect === this.node.id) {
-        this.$refs.node.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-          inline: "center"
-        });
-      }
+      this.$refs.node.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "center"
+      });
     });
+    if (this.nodeStatus.curSelect === this.node.id) {
+      this.getNodeInfo({
+        node: this.node,
+        parent: this.parent,
+        onLeft: this.onLeft
+      });
+    }
   },
+
   beforeDestroy() {
     this.nodeRefs.delete(this.$refs.node);
+  },
+
+  methods: {
+    ...mapActions({
+      selectNode: "selectNode"
+    }),
+    ...mapActions("node", {
+      getNodeInfo: "getNodeInfo"
+    }),
+
+    handleSelectNode() {
+      this.selectNode({ nodeId: this.node.id, selectByClick: true });
+    }
   }
 };
 </script>

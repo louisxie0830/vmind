@@ -62,7 +62,7 @@ export default {
     this.$nextTick(() => {
       this.containerRef = this.$parent.$refs;
       window.addEventListener("keydown", this.handleKeydown);
-      window.addEventListener("click", this.clearNodeStatus);
+      window.addEventListener("click", this.handelClearClick);
     });
   },
 
@@ -168,17 +168,19 @@ export default {
             break;
           }
           case "ARROWDOWN":
-            const curIndex = this.getNodeStatus.curNodeInfo.parent.children.findIndex(
-              ({ id }) => id === this.getNodeStatus.curNodeInfo.id
-            );
-            const lastIndex =
-              this.getNodeStatus.curNodeinfo.parent.children.length - 1;
-            if (curIndex < lastIndex) {
-              this.selectNode({
-                nodeId: this.getNodeStatus.curNodeInfo.parent.children[
-                  curIndex + 1
-                ].id
-              });
+            {
+              const curIndex = this.getNodeStatus.curNodeInfo.parent.children.findIndex(
+                ({ id }) => id === this.getNodeStatus.curNodeInfo.id
+              );
+              const lastIndex =
+                this.getNodeStatus.curNodeinfo.parent.children.length - 1;
+              if (curIndex < lastIndex) {
+                this.selectNode({
+                  nodeId: this.getNodeStatus.curNodeInfo.parent.children[
+                    curIndex + 1
+                  ].id
+                });
+              }
             }
             break;
 
@@ -206,6 +208,20 @@ export default {
           }
         }
       };
+    },
+
+    handelClearClick(e) {
+      for (let i = 0, len = e.target.classList.length; i < len; i++) {
+        if (e.target.classList[i] === "dropArea") {
+          return;
+        }
+      }
+      this.clearNodeStatus({
+        curSelect: "",
+        selectByClick: false,
+        curEdit: "",
+        curNodeInfo: {}
+      });
     }
   }
 };
