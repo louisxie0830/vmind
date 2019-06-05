@@ -10,7 +10,7 @@ import { css } from "emotion";
 import * as refer from "../../statics/refer";
 export default {
   computed: {
-    ...mapGetters(["getTitle", "getThemeIndex", "getThemeList"]),
+    ...mapGetters(["getGlobal"]),
     className() {
       return css`
         ${refer.THEME_MAIN}: ${this.theme.main};
@@ -21,7 +21,7 @@ export default {
       `;
     },
     theme() {
-      return this.getThemeList[this.getThemeIndex];
+      return this.getGlobal.themeList[this.getGlobal.themeIndex];
     }
   }
 };

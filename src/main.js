@@ -6,6 +6,9 @@ import store from "../store";
 import "normalize.css";
 import "../statics/zwicon.css";
 import "./registerServiceWorker";
+import SubNode from "./components/SubNode.vue";
+
+Vue.component("SubNode", SubNode);
 
 Vue.config.productionTip = false;
 

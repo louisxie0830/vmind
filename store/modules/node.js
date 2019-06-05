@@ -1,8 +1,14 @@
 export default {
+  namespaced: true,
   state: {
-    curSelect: "",
-    selectByClick: false,
-    curEdit: "",
-    curNodeInfo: {}
+    nodeStatus: {
+      curSelect: "",
+      selectByClick: false,
+      curEdit: "",
+      curNodeInfo: {}
+    }
+  },
+  getters: {
+    getNodeStatus: state => state.nodeStatus
   }
 };
