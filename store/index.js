@@ -5,6 +5,8 @@ Vue.use(Vuex);
 import node from "./modules/node";
 import mindMap from "./modules/mindMap";
 import history from "./modules/history";
+import { NEW_NODE_TEXT } from "../statics/refer";
+import md5 from "md5";
 
 const state = {
   global: {
@@ -57,6 +59,149 @@ const state = {
   }
 };
 
+const actions = {
+  toggleChildren({ dispatch }, param) {
+    dispatch("mindMap/toggleChildren", {
+      nodeId: param.nodeId,
+      node: {
+        showChildren: param.bool
+      }
+    });
+  },
+
+  addChild({ dispatch }, param) {
+    const newNodeId = md5("" + Date.now() + Math.random());
+    dispatch("mindMap/toggleChildren", {
+      nodeId: param.nodeId,
+      node: {
+        showChildren: true
+      }
+    });
+    dispatch("mindMap/addChild", {
+      nodeId: param.nodeId,
+      node: {
+        id: newNodeId,
+        text: NEW_NODE_TEXT,
+        showChildren: true,
+        children: []
+      }
+    });
+    dispatch("node/setEdit", {
+      curSelect: "",
+      curEdit: newNodeId,
+      curNodeInfo: {}
+    });
+  },
+
+  addSibling({ dispatch }, param) {
+    const newNodeId = md5("" + Date.now() + Math.random());
+    dispatch("mindMap/addSibling", {
+      nodeId: param.nodeId,
+      parentId: param.parentId,
+      node: {
+        id: newNodeId,
+        text: NEW_NODE_TEXT,
+        showChildren: true,
+        children: []
+      }
+    });
+    dispatch("node/setEdit", {
+      curSelect: "",
+      curEdit: newNodeId,
+      curNodeInfo: {}
+    });
+  },
+
+  moveNode({ dispatch }, param) {
+    dispatch("mindMap/moveNode", {
+      nodeId: param.nodeId,
+      targetId: param.targetId,
+      parentId: param.parentId,
+      isSibling: param.isSibling
+    });
+
+    dispatch("node/setSelect", {
+      curSelect: param.nodeId,
+      selectByClick: false,
+      curEdit: "",
+      curNodeInfo: {}
+    });
+  },
+
+  editNode({ dispatch }, param) {
+    dispatch("node/setEdit", {
+      curSelect: "",
+      curEdit: param.nodeId,
+      curNodeInfo: {}
+    });
+  },
+
+  changeText({ dispatch }, param) {
+    dispatch("mindMap/changeText", {
+      nodeId: param.nodeId,
+      node: {
+        text: param.text
+      }
+    });
+  },
+
+  selectNode({ dispatch }, param) {
+    dispatch("node/setSelect", {
+      curSelect: param.nodeId,
+      selectByClick: false,
+      curEdit: "",
+      curNodeInfo: {}
+    });
+  },
+
+  deleteNode({ dispatch }, param) {
+    dispatch("mindMap/deleteNode", {
+      nodeId: param.nodeId,
+      parentId: param.parentId
+    });
+
+    dispatch("node/setSelect", {
+      curSelect: param.nodeId,
+      selectByClick: false,
+      curEdit: "",
+      curNodeInfo: {}
+    });
+  },
+
+  clearNodeStatus({ dispatch }) {
+    dispatch("node/clearAll");
+  },
+
+  setMindMap({ dispatch }, param) {
+    if (param.isNewMap) {
+      dispatch("history/clearHistory");
+      dispatch("node/setSelect", {
+        curSelect: param.mindMap.id,
+        selectByClick: false,
+        curEdit: "",
+        curNodeInfo: {}
+      });
+    }
+    dispatch("mindMap/setMindMap", param.mindMap);
+  },
+
+  expandAll({ dispatch }, param) {
+    dispatch("mindMap/expandAll", {
+      nodeId: param.nodeId
+    });
+    dispatch("node/setSelect", {
+      curSelect: param.nodeId,
+      selectByClick: false,
+      curEdit: "",
+      curNodeInfo: {}
+    });
+  },
+
+  undoHistory({ dispatch }, param) {},
+
+  redoHistory({ dispatch }, param) {}
+};
+
 const mutations = {};
 
 const getters = {
@@ -67,6 +212,7 @@ export default new Store({
   state,
   mutations,
   getters,
+  actions,
   modules: {
     node,
     mindMap,

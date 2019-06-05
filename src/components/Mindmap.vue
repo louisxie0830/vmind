@@ -42,7 +42,7 @@ export default {
   },
   computed: {
     ...mapGetters("mindMap", {
-      getMindmap: "getMindmap"
+      getMindMap: "getMindMap"
     }),
 
     ...mapGetters("node", {
@@ -54,21 +54,159 @@ export default {
     }),
 
     rootNode() {
-      return this.getMindmap;
+      return this.getMindMap;
     }
   },
 
   created() {
     this.$nextTick(() => {
       this.containerRef = this.$parent.$refs;
+      window.addEventListener("keydown", this.handleKeydown);
+      window.addEventListener("click", this.clearNodeStatus);
     });
-    this.useMindmap();
   },
 
   methods: {
-    ...mapActions("mindMap", {
-      useMindmap: "useMindmap"
-    })
+    ...mapActions({
+      toggleChildren: "toggleChildren",
+      addChild: "addChild",
+      addSibling: "addSibling",
+      moveNode: "moveNode",
+      changeText: "changeText",
+      deleteNode: "deleteNode",
+      setMindMap: "setMindMap",
+      expandAll: "expandAll",
+      setEdit: "setEdit",
+      setSelect: "setSelect",
+      clearAll: "clearAll",
+      clearNodeStatus: "clearNodeStatus",
+      selectNode: "selectNode",
+      editNode: "editNode"
+    }),
+
+    handleKeydown() {
+      const handleKeyEventWithNode = event => {
+        const key = event.key.toUpperCase();
+        switch (key) {
+          case "TAB":
+            this.addChild({ nodeId: this.getNodeStatus.curSelect });
+            break;
+
+          case "ENTER":
+            this.addSibling({
+              nodeId: this.getNodeStatus.curSelect,
+              parentId: this.getNodeStatus.curNodeInfo.parent.id
+            });
+            break;
+
+          case "F2":
+            this.editNode({ nodeId: this.getNodeStatus.curSelect });
+            break;
+
+          case "BACKSPACE":
+          case "DELETE":
+            this.deleteNode({
+              nodeId: this.getNodeStatus.curSelect,
+              parentId: this.getNodeStatus.curNodeInfo.parent.id
+            });
+            break;
+
+          case " ":
+            this.toggleChildren({
+              nodeId: this.getNodeStatus.curSelect,
+              bool: !this.getNodeStatus.curNodeInfo.showChildren
+            });
+            break;
+
+          case "ARROWLEFT":
+            if (this.getNodeStatus.curNodeInfo.parent === refer.ROOT_PARENT) {
+              if (this.getNodeStatus.curNodeInfo.children.length > 3) {
+                this.selectNode({
+                  nodeId: this.getNodeStatus.curNodeInfo.children[
+                    Math.trunc(
+                      this.getNodeStatus.curNodeInfo.children.length / 2
+                    )
+                  ].id
+                });
+              }
+            } else {
+              if (!this.getNodeStatus.curNodeInfo.onLeft) {
+                this.selectNode({
+                  nodeId: this.getNodeStatus.curNodeInfo.parent.id
+                });
+              } else if (this.getNodeStatus.curNodeInfo.children.length > 0) {
+                this.selectNode({
+                  nodeId: this.getNodeStatus.curNodeInfo.children[0].id
+                });
+              }
+            }
+            break;
+
+          case "ARROWRIGHT":
+            if (this.getNodeStatus.curNodeInfo.onLeft) {
+              this.selectNode({
+                nodeId: this.getNodeStatus.curNodeInfo.parent.id
+              });
+            } else if (this.getNodeStatus.curNodeInfo.children.length > 0) {
+              this.selectNode({
+                nodeId: this.getNodeStatus.curNodeInfo.children[0].id
+              });
+            }
+            break;
+
+          case "ARROWUP": {
+            const curIndex = this.getNodeStatus.curNodeInfo.parent.children.findIndex(
+              ({ id }) => id === this.getNodeStatus.curNodeInfo.id
+            );
+            if (curIndex > 0) {
+              this.selectNode({
+                nodeId: this.getNodeStatus.curNodeInfo.parent.children[
+                  curIndex - 1
+                ].id
+              });
+            }
+            break;
+          }
+          case "ARROWDOWN":
+            const curIndex = this.getNodeStatus.curNodeInfo.parent.children.findIndex(
+              ({ id }) => id === this.getNodeStatus.curNodeInfo.id
+            );
+            const lastIndex =
+              this.getNodeStatus.curNodeinfo.parent.children.length - 1;
+            if (curIndex < lastIndex) {
+              this.selectNode({
+                nodeId: this.getNodeStatus.curNodeInfo.parent.children[
+                  curIndex + 1
+                ].id
+              });
+            }
+            break;
+
+          default:
+            break;
+        }
+      };
+      return event => {
+        if (!this.getNodeStatus.curEdit) {
+          const isMac = navigator.platform.toUpperCase().startsWith("MAC");
+          const combineKeyPressed = isMac ? event.metaKey : event.ctrlKey;
+          if (combineKeyPressed && event.key.toUpperCase() === "Z") {
+            if (event.shiftKey) {
+              // historyHook.redoHistory();
+            } else {
+              // historyHook.undoHistory();
+            }
+          }
+        }
+        if (this.getNodeStatus.curSelect) {
+          try {
+            handleKeyEventWithNode(event);
+          } catch (error) {
+            throw error;
+          }
+        }
+      };
+    }
   }
 };
 </script>
