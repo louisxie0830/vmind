@@ -2,7 +2,7 @@
   <button
     :class="buttonClass"
     :disabled="disabled"
-    @click.stop="onClick && onClick()"
+    @click="onClick && onClick()"
   >
     <i :class="iconClass" />
     <span v-text="children" />

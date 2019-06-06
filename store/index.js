@@ -209,6 +209,7 @@ const getters = {
 };
 
 export default new Store({
+  strict: true,
   state,
   mutations,
   getters,

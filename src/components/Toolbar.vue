@@ -1,5 +1,5 @@
 <template>
-  <div class="toolbar">
+  <div class="toolbar" @click="e => e.stopPropagation()">
     <ToolButton
       :icon="'git-commit'"
       :onClick="handleAddChild"

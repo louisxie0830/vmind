@@ -7,6 +7,7 @@
     :data-parent="parent.id"
     :data-show-children="node.showChildren"
     :id="node.id"
+    @click="e => e.stopPropagation()"
   >
     <InputDiv
       v-if="nodeStatus.curEdit === node.id"
@@ -15,16 +16,16 @@
     />
     <div
       ref="dropArea"
+      :id="node.id"
       class="dropArea"
       :data-tag="refer.DROP_AREA"
-      @click.stop="handleSelectNode"
     />
     <p v-text="node.text" />
     <button
       :class="toggleButtonClass"
       v-if="layer > 0 && node.children.length > 0"
       v-text="node.showChildren ? '-' : '+'"
-      @click.stop="handleToggleChildren"
+      @click="handleToggleChildren"
     />
     <Toolbar
       v-show="nodeStatus.curSelect === node.id && nodeStatus.selectByClick"
@@ -42,6 +43,7 @@ import { mapGetters } from "vuex";
 import InputDiv from "./InputDiv";
 import Toolbar from "./Toolbar";
 import { mapActions } from "vuex";
+import throttle from "lodash/throttle";
 
 export default {
   components: {
@@ -77,7 +79,8 @@ export default {
 
   data() {
     return {
-      refer: refer
+      refer: refer,
+      id: null
     };
   },
 
@@ -196,15 +199,20 @@ export default {
 
   created() {
     this.$nextTick(() => {
-      this.$refs.dropArea.addEventListener("dblclick", this.handleEditNode);
+      this.id = document.getElementById(this.node.id);
+      this.id.addEventListener("click", this.handleSelectNode);
+      this.id.addEventListener("dblclick", this.handleEditNode);
       this.nodeRefs.add(this.$refs.node);
+    });
+  },
+
+  updated() {
+    if (this.nodeStatus.curSelect === this.node.id) {
       this.$refs.node.scrollIntoView({
         behavior: "smooth",
         block: "center",
         inline: "center"
       });
-    });
-    if (this.nodeStatus.curSelect === this.node.id) {
       this.getNodeInfo({
         node: this.node,
         parent: this.parent,
@@ -214,7 +222,8 @@ export default {
   },
 
   beforeDestroy() {
-    this.$refs.dropArea.removeEventListener("dblclick", this.handleEditNode);
+    this.id.removeEventListener("click", this.handleSelectNode);
+    this.id.removeEventListener("dblclick", this.handleEditNode);
     this.nodeRefs.delete(this.$refs.node);
   },
 
@@ -229,12 +238,11 @@ export default {
       getNodeInfo: "getNodeInfo"
     }),
 
-    handleSelectNode() {
+    handleSelectNode(e) {
       this.selectNode({ nodeId: this.node.id, selectByClick: true });
     },
 
     handleEditNode(e) {
-      // e.stopPropagation();
       this.editNode({ nodeId: this.node.id });
     },
 

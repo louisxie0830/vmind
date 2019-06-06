@@ -4,7 +4,7 @@
     ref="inputDiv"
     contentEditable="true"
     suppressContentEditableWarning="true"
-    @click.stop=""
+    @click="e => e.stopPropagation()"
     @keydown="handleKeydown"
     @blur="handleBlur"
     v-text="children"
@@ -46,16 +46,16 @@ export default {
         this.$refs.inputDiv.textContent = this.children;
       }
       if (event.key.toUpperCase() === "ENTER") {
+        this.changeText({
+          nodeId: this.nodeId,
+          text: this.$refs.inputDiv.textContent
+        });
         this.$refs.inputDiv.blur();
       }
     },
 
     handleBlur(e) {
-      this.changeText({
-        nodeId: this.nodeId,
-        text: this.$refs.inputDiv.textContent
-      });
-      this.selectNode({ nodeId: this.nodeId });
+      // this.selectNode({ nodeId: this.nodeId });
     }
   }
 };

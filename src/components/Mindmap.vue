@@ -77,7 +77,6 @@ export default {
       setMindMap: "setMindMap",
       expandAll: "expandAll",
       setEdit: "setEdit",
-      setSelect: "setSelect",
       clearAll: "clearAll",
       clearNodeStatus: "clearNodeStatus",
       selectNode: "selectNode",
@@ -93,10 +92,16 @@ export default {
             break;
 
           case "ENTER":
+            console.log(
+              "this.getNodeStatus.curSelect: ",
+              this.getNodeStatus.curSelect
+            );
+            event.preventDefault();
             this.addSibling({
               nodeId: this.getNodeStatus.curSelect,
               parentId: this.getNodeStatus.curNodeInfo.parent.id
             });
+            this.selectNode({ nodeId: this.getNodeStatus.curSelect });
             break;
 
           case "F2":
@@ -188,26 +193,24 @@ export default {
             break;
         }
       };
-      return event => {
-        if (!this.getNodeStatus.curEdit) {
-          const isMac = navigator.platform.toUpperCase().startsWith("MAC");
-          const combineKeyPressed = isMac ? event.metaKey : event.ctrlKey;
-          if (combineKeyPressed && event.key.toUpperCase() === "Z") {
-            if (event.shiftKey) {
-              // historyHook.redoHistory();
-            } else {
-              // historyHook.undoHistory();
-            }
+      if (!this.getNodeStatus.curEdit) {
+        const isMac = navigator.platform.toUpperCase().startsWith("MAC");
+        const combineKeyPressed = isMac ? event.metaKey : event.ctrlKey;
+        if (combineKeyPressed && event.key.toUpperCase() === "Z") {
+          if (event.shiftKey) {
+            // historyHook.redoHistory();
+          } else {
+            // historyHook.undoHistory();
           }
         }
-        if (this.getNodeStatus.curSelect) {
-          try {
-            handleKeyEventWithNode(event);
-          } catch (error) {
-            throw error;
-          }
+      }
+      if (this.getNodeStatus.curEdit) {
+        try {
+          handleKeyEventWithNode(event);
+        } catch (error) {
+          throw error;
         }
-      };
+      }
     },
 
     handelClearClick(e) {

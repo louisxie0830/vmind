@@ -30,12 +30,23 @@ export default {
     },
 
     getNodeInfo({ state, commit }, param) {
-      commit("updateNodeStatus", { ...state.nodeStatus, ...param });
+      commit("updateNodeStatus", {
+        ...state.nodeStatus,
+        ...{
+          curNodeInfo: {
+            ...param.node,
+            onLeft: param.onLeft,
+            parent: param.parent
+          }
+        }
+      });
     }
   },
 
   mutations: {
     updateNodeStatus(state, data) {
+      console.log("data: ", data);
+
       state.nodeStatus = data;
     }
   }
