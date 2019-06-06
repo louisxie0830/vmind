@@ -1,3 +1,7 @@
+export const handlePropagation = event => {
+  event.stopPropagation();
+};
+
 export const deepCopy = data => JSON.parse(JSON.stringify(data));
 
 export const findNode = (node, searchId) => {

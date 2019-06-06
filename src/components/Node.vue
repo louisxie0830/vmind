@@ -7,7 +7,7 @@
     :data-parent="parent.id"
     :data-show-children="node.showChildren"
     :id="node.id"
-    @click="e => e.stopPropagation()"
+    @click="handlePropagation"
   >
     <InputDiv
       v-if="nodeStatus.curEdit === node.id"
@@ -44,6 +44,7 @@ import InputDiv from "./InputDiv";
 import Toolbar from "./Toolbar";
 import { mapActions } from "vuex";
 import throttle from "lodash/throttle";
+import { handlePropagation } from "../../methods/assistFunction.js";
 
 export default {
   components: {
@@ -207,18 +208,18 @@ export default {
   },
 
   updated() {
-    if (this.nodeStatus.curSelect === this.node.id) {
-      this.$refs.node.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-        inline: "center"
-      });
-      this.getNodeInfo({
-        node: this.node,
-        parent: this.parent,
-        onLeft: this.onLeft
-      });
-    }
+    // if (this.nodeStatus.curSelect === this.node.id) {
+    //   this.$refs.node.scrollIntoView({
+    //     behavior: "smooth",
+    //     block: "center",
+    //     inline: "center"
+    //   });
+    //   this.getNodeInfo({
+    //     node: this.node,
+    //     parent: this.parent,
+    //     onLeft: this.onLeft
+    //   });
+    // }
   },
 
   beforeDestroy() {
@@ -257,7 +258,9 @@ export default {
         curEdit: "",
         curNodeInfo: {}
       });
-    }
+    },
+
+    handlePropagation: handlePropagation
   }
 };
 </script>

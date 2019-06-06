@@ -4,7 +4,7 @@
     ref="inputDiv"
     contentEditable="true"
     suppressContentEditableWarning="true"
-    @click="e => e.stopPropagation()"
+    @click="handlePropagation"
     @keydown="handleKeydown"
     @blur="handleBlur"
     v-text="children"
@@ -13,6 +13,7 @@
 
 <script>
 import { mapActions } from "vuex";
+import { handlePropagation } from "../../methods/assistFunction";
 
 export default {
   props: {
@@ -56,7 +57,8 @@ export default {
 
     handleBlur(e) {
       // this.selectNode({ nodeId: this.nodeId });
-    }
+    },
+    handlePropagation: handlePropagation
   }
 };
 </script>

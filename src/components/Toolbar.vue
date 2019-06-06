@@ -1,5 +1,5 @@
 <template>
-  <div class="toolbar" @click="e => e.stopPropagation()">
+  <div class="toolbar" @click="handlePropagation">
     <ToolButton
       :icon="'git-commit'"
       :onClick="handleAddChild"
@@ -34,6 +34,7 @@
 <script>
 import ToolButton from "./ToolButton";
 import { mapActions } from "vuex";
+import { handlePropagation } from "../../methods/assistFunction";
 
 export default {
   components: {
@@ -72,7 +73,9 @@ export default {
         nodeId: this.node.id,
         bool: this.node.showChildren
       });
-    }
+    },
+
+    handlePropagation: handlePropagation
   }
 };
 </script>
