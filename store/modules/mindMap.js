@@ -98,10 +98,10 @@ export default {
       const newMindMap = deepCopy(state.mindMap);
       if (param.parentId) {
         const nodeFound = findNode(newMindMap, param.parentId);
-        const deleteIndex = nodeFound.findIndex(
+        const deleteIndex = nodeFound.children.findIndex(
           ({ id }) => id === param.nodeId
         );
-        nodeFound.splice(deleteIndex, 1);
+        nodeFound.children.splice(deleteIndex, 1);
       }
       commit("updateMinMapData", newMindMap);
     },

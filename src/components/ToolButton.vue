@@ -1,7 +1,11 @@
 <template>
-  <button :class="buttonClass" :disabled="disabled" @click.prevent="onClick()">
+  <button
+    :class="buttonClass"
+    :disabled="disabled"
+    @click.stop="onClick && onClick()"
+  >
     <i :class="iconClass" />
-    <span> {{ children }}</span>
+    <span v-text="children" />
   </button>
 </template>
 
