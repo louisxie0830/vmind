@@ -14,15 +14,17 @@
       :children="node.text"
     />
     <div
+      ref="dropArea"
       class="dropArea"
       :data-tag="refer.DROP_AREA"
-      @click="handleSelectNode"
+      @click.stop="handleSelectNode"
     />
     <p v-text="node.text" />
     <button
       :class="toggleButtonClass"
       v-if="layer > 0 && node.children.length > 0"
       v-text="node.showChildren ? '-' : '+'"
+      @click.stop="handleToggleChildren"
     />
     <Toolbar
       v-show="nodeStatus.curSelect === node.id && nodeStatus.selectByClick"
@@ -194,6 +196,7 @@ export default {
 
   created() {
     this.$nextTick(() => {
+      this.$refs.dropArea.addEventListener("dblclick", this.handleEditNode);
       this.nodeRefs.add(this.$refs.node);
       this.$refs.node.scrollIntoView({
         behavior: "smooth",
@@ -211,12 +214,16 @@ export default {
   },
 
   beforeDestroy() {
+    this.$refs.dropArea.removeEventListener("dblclick", this.handleEditNode);
     this.nodeRefs.delete(this.$refs.node);
   },
 
   methods: {
     ...mapActions({
-      selectNode: "selectNode"
+      selectNode: "selectNode",
+      clearNodeStatus: "clearNodeStatus",
+      toggleChildren: "toggleChildren",
+      editNode: "editNode"
     }),
     ...mapActions("node", {
       getNodeInfo: "getNodeInfo"
@@ -224,6 +231,24 @@ export default {
 
     handleSelectNode() {
       this.selectNode({ nodeId: this.node.id, selectByClick: true });
+    },
+
+    handleEditNode(e) {
+      // e.stopPropagation();
+      this.editNode({ nodeId: this.node.id });
+    },
+
+    handleToggleChildren() {
+      this.toggleChildren({
+        nodeId: this.node.id,
+        bool: !this.node.showChildren
+      });
+      this.clearNodeStatus({
+        curSelect: "",
+        selectByClick: false,
+        curEdit: "",
+        curNodeInfo: {}
+      });
     }
   }
 };

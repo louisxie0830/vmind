@@ -61,9 +61,9 @@ export default {
   created() {
     this.$nextTick(() => {
       this.containerRef = this.$parent.$refs;
-      window.addEventListener("keydown", this.handleKeydown);
-      window.addEventListener("click", this.handelClearClick);
     });
+    window.addEventListener("keydown", this.handleKeydown);
+    window.addEventListener("click", this.handelClearClick);
   },
 
   methods: {
@@ -84,7 +84,7 @@ export default {
       editNode: "editNode"
     }),
 
-    handleKeydown() {
+    handleKeydown(event) {
       const handleKeyEventWithNode = event => {
         const key = event.key.toUpperCase();
         switch (key) {
@@ -211,11 +211,6 @@ export default {
     },
 
     handelClearClick(e) {
-      for (let i = 0, len = e.target.classList.length; i < len; i++) {
-        if (e.target.classList[i] === "dropArea") {
-          return;
-        }
-      }
       this.clearNodeStatus({
         curSelect: "",
         selectByClick: false,

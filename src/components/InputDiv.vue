@@ -4,6 +4,7 @@
     ref="inputDiv"
     contentEditable="true"
     suppressContentEditableWarning="true"
+    @click.stop=""
     @keydown="handleKeydown"
     @blur="handleBlur"
     v-text="children"
@@ -11,6 +12,8 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   props: {
     nodeId: {
@@ -24,10 +27,36 @@ export default {
     }
   },
 
-  methods: {
-    handleKeydown() {},
+  created() {
+    this.$nextTick(() => {
+      this.$refs.inputDiv.focus();
+      const selection = document.getSelection();
+      selection.selectAllChildren(this.$refs.inputDiv);
+    });
+  },
 
-    handleBlur() {}
+  methods: {
+    ...mapActions({
+      changeText: "changeText",
+      selectNode: "selectNode"
+    }),
+
+    handleKeydown(event) {
+      if (event.key.toUpperCase() === "ESCAPE") {
+        this.$refs.inputDiv.textContent = this.children;
+      }
+      if (event.key.toUpperCase() === "ENTER") {
+        this.$refs.inputDiv.blur();
+      }
+    },
+
+    handleBlur(e) {
+      this.changeText({
+        nodeId: this.nodeId,
+        text: this.$refs.inputDiv.textContent
+      });
+      this.selectNode({ nodeId: this.nodeId });
+    }
   }
 };
 </script>
