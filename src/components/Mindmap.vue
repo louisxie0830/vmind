@@ -6,12 +6,13 @@
       :layer="0"
       :node="rootNode"
     />
-    <!-- <DragCanvas
-      parent_ref="{self}"
-      container_ref="{container_ref}"
-      mindmap="{root_node}"
+    <DragCanvas
+      v-if="parentRef && containerRef"
+      :parentRef.sync="parentRef"
+      :containerRef.sync="containerRef"
+      :mindmap="getMindMap"
     />
-    <LineCanvas
+    <!-- <LineCanvas
       parent_ref="{self}"
       mindmap="{root_node}"
       node_refs="{node_refs}"
@@ -36,6 +37,7 @@ export default {
   data() {
     return {
       containerRef: null,
+      parentRef: null,
       id: refer.MINDMAP_ID,
       nodeRefs: new Set()
     };
@@ -60,6 +62,7 @@ export default {
 
   created() {
     this.$nextTick(() => {
+      this.parentRef = this.$refs.mindMap;
       this.containerRef = this.$parent.$refs;
     });
   },
