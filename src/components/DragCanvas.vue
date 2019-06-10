@@ -38,22 +38,6 @@ export default {
       );
     });
   },
-  updated() {
-    console.log("updated");
-    // if (this.handleDrag) {
-    // } else {
-    //   this.handleDrag = this.getDragEvents(
-    //     this.mindmap,
-    //     this.$el,
-    //     this.containerRef,
-    //     this.theme
-    //   );
-    //
-    //   this.handleDrag.forEach(event =>
-    //     window.addEventListener(event.type, event.listener)
-    //   );
-    // }
-  },
 
   beforeDestroy() {
     window.removeEventListener("resize", this.handleWindowResize);

@@ -12,11 +12,12 @@
       :containerRef.sync="containerRef"
       :mindmap="getMindMap"
     />
-    <!-- <LineCanvas
-      parent_ref="{self}"
-      mindmap="{root_node}"
-      node_refs="{node_refs}"
-    /> -->
+    <LineCanvas
+      v-if="parentRef && containerRef"
+      :parentRef.sync="parentRef"
+      :mindmap="getMindMap"
+      :nodeRefs="nodeRefs"
+    />
   </div>
 </template>
 

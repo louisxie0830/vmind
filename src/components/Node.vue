@@ -212,11 +212,12 @@ export default {
     this.$store.subscribe((mutation, state) => {
       if (mutation.type === "node/setSelect") {
         if (mutation.payload.curSelect === this.node.id) {
-          this.$refs.node.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-            inline: "center"
-          });
+          this.$refs.node &&
+            this.$refs.node.scrollIntoView({
+              behavior: "smooth",
+              block: "center",
+              inline: "center"
+            });
           this.getNodeInfo({
             node: this.node,
             parent: this.parent,
