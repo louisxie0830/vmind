@@ -21,7 +21,26 @@ export default {
   },
 
   watch: {
-    mindmap(val) {}
+    flag(val) {
+      this.$nextTick(() => {
+        const dom = this.$el;
+        dom.width = this.parentRef.offsetWidth;
+        dom.height = this.parentRef.offsetHeight;
+        const map = new Map(
+          Array.from(this.nodeRefs).map(ref => [
+            ref.id,
+            [
+              ref.offsetLeft,
+              ref.offsetLeft + ref.offsetWidth,
+              ref.offsetTop + 0.5 * ref.offsetHeight,
+              ref.dataset.tag
+            ]
+          ])
+        );
+        const ctx = dom.getContext("2d");
+        this.drawLineCanvas(ctx, this.theme, this.mindmap, map);
+      });
+    }
   },
 
   created() {
