@@ -25,22 +25,24 @@ export default {
     };
   },
 
+  watch: {
+    flag(val) {
+      this.updateDragEvents();
+    }
+  },
+
   created() {
     this.$nextTick(() => {
       window.addEventListener("resize", this.handleWindowResize, true);
-      this.handleDrag = this.getDragEvents(
-        this.mindmap,
-        this.containerRef,
-        this.theme
-      );
-      this.handleDrag.forEach(event =>
-        window.addEventListener(event.type, event.listener)
-      );
+      this.updateDragEvents();
     });
   },
 
   beforeDestroy() {
     window.removeEventListener("resize", this.handleWindowResize);
+    this.handleDrag.forEach(event =>
+      window.removeEventListener(event.type, event.listener)
+    );
   },
 
   methods: {
@@ -292,6 +294,31 @@ export default {
           }
         }
       ];
+    },
+
+    updateDragEvents() {
+      if (this.handleDrag) {
+        this.handleDrag.forEach(event =>
+          window.removeEventListener(event.type, event.listener)
+        );
+        this.handleDrag = this.getDragEvents(
+          this.mindmap,
+          this.containerRef,
+          this.theme
+        );
+        this.handleDrag.forEach(event =>
+          window.addEventListener(event.type, event.listener)
+        );
+      } else {
+        this.handleDrag = this.getDragEvents(
+          this.mindmap,
+          this.containerRef,
+          this.theme
+        );
+        this.handleDrag.forEach(event =>
+          window.addEventListener(event.type, event.listener)
+        );
+      }
     }
   }
 };
