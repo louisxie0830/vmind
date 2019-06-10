@@ -56,7 +56,9 @@ export default {
     },
 
     handleBlur(e) {
-      // this.selectNode({ nodeId: this.nodeId });
+      this.$nextTick(() => {
+        this.selectNode({ nodeId: this.nodeId });
+      });
     },
     handlePropagation: handlePropagation
   }

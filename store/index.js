@@ -122,7 +122,7 @@ const actions = {
 
     dispatch("node/setSelect", {
       curSelect: param.nodeId,
-      selectByClick: false,
+      selectByClick: param.selectByClick || false,
       curEdit: "",
       curNodeInfo: {}
     });
@@ -162,7 +162,7 @@ const actions = {
 
     dispatch("node/setSelect", {
       curSelect: param.nodeId,
-      selectByClick: false,
+      selectByClick: param.selectByClick || false,
       curEdit: "",
       curNodeInfo: {}
     });
@@ -177,7 +177,7 @@ const actions = {
       dispatch("history/clearHistory");
       dispatch("node/setSelect", {
         curSelect: param.mindMap.id,
-        selectByClick: false,
+        selectByClick: param.selectByClick || false,
         curEdit: "",
         curNodeInfo: {}
       });
@@ -191,7 +191,7 @@ const actions = {
     });
     dispatch("node/setSelect", {
       curSelect: param.nodeId,
-      selectByClick: false,
+      selectByClick: param.selectByClick || false,
       curEdit: "",
       curNodeInfo: {}
     });

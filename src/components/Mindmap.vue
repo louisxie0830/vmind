@@ -62,8 +62,8 @@ export default {
     this.$nextTick(() => {
       this.containerRef = this.$parent.$refs;
     });
-    window.addEventListener("keydown", this.handleKeydown);
-    window.addEventListener("click", this.handelClearClick);
+    window.addEventListener("keydown", this.handleKeydown, false);
+    window.addEventListener("click", this.handelClearClick, false);
   },
 
   methods: {
@@ -92,10 +92,6 @@ export default {
             break;
 
           case "ENTER":
-            console.log(
-              "this.getNodeStatus.curSelect: ",
-              this.getNodeStatus.curSelect
-            );
             event.preventDefault();
             this.addSibling({
               nodeId: this.getNodeStatus.curSelect,
@@ -110,6 +106,7 @@ export default {
 
           case "BACKSPACE":
           case "DELETE":
+            event.preventDefault();
             this.deleteNode({
               nodeId: this.getNodeStatus.curSelect,
               parentId: this.getNodeStatus.curNodeInfo.parent.id
@@ -193,7 +190,7 @@ export default {
             break;
         }
       };
-      if (!this.getNodeStatus.curEdit) {
+      if (this.getNodeStatus.curEdit === "") {
         const isMac = navigator.platform.toUpperCase().startsWith("MAC");
         const combineKeyPressed = isMac ? event.metaKey : event.ctrlKey;
         if (combineKeyPressed && event.key.toUpperCase() === "Z") {
@@ -204,7 +201,7 @@ export default {
           }
         }
       }
-      if (this.getNodeStatus.curEdit) {
+      if (this.getNodeStatus.cur_select !== "") {
         try {
           handleKeyEventWithNode(event);
         } catch (error) {

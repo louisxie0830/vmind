@@ -18,19 +18,19 @@ export default {
       if (state.nodeStatus.curSelect === param.curSelect) {
         delete param.curNodeInfo;
       }
-      commit("updateNodeStatus", { ...state.nodeStatus, ...param });
+      commit("setSelect", { ...state.nodeStatus, ...param });
     },
 
     setEdit({ state, commit }, param) {
-      commit("updateNodeStatus", { ...state.nodeStatus, ...param });
+      commit("setEdit", { ...state.nodeStatus, ...param });
     },
 
     clearAll({ state, commit }, param) {
-      commit("updateNodeStatus", { ...state.nodeStatus, ...param });
+      commit("clearAll", { ...state.nodeStatus, ...param });
     },
 
     getNodeInfo({ state, commit }, param) {
-      commit("updateNodeStatus", {
+      commit("getNodeInfo", {
         ...state.nodeStatus,
         ...{
           curNodeInfo: {
@@ -44,9 +44,19 @@ export default {
   },
 
   mutations: {
-    updateNodeStatus(state, data) {
-      console.log("data: ", data);
+    setSelect(state, data) {
+      state.nodeStatus = data;
+    },
 
+    setEdit(state, data) {
+      state.nodeStatus = data;
+    },
+
+    clearAll(state, data) {
+      state.nodeStatus = data;
+    },
+
+    getNodeInfo(state, data) {
       state.nodeStatus = data;
     }
   }

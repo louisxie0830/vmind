@@ -14,12 +14,7 @@
       :nodeId="node.id"
       :children="node.text"
     />
-    <div
-      ref="dropArea"
-      :id="node.id"
-      class="dropArea"
-      :data-tag="refer.DROP_AREA"
-    />
+    <div ref="dropArea" class="dropArea" :data-tag="refer.DROP_AREA" />
     <p v-text="node.text" />
     <button
       :class="toggleButtonClass"
@@ -200,31 +195,44 @@ export default {
 
   created() {
     this.$nextTick(() => {
-      this.id = document.getElementById(this.node.id);
-      this.id.addEventListener("click", this.handleSelectNode);
-      this.id.addEventListener("dblclick", this.handleEditNode);
+      this.$refs.dropArea.addEventListener(
+        "click",
+        this.handleSelectNode,
+        false
+      );
+      this.$refs.dropArea.addEventListener(
+        "dblclick",
+        this.handleEditNode,
+        false
+      );
       this.nodeRefs.add(this.$refs.node);
     });
   },
+  mounted() {
+    this.$store.subscribe((mutation, state) => {
+      if (mutation.type === "node/setSelect") {
+        if (mutation.payload.curSelect === this.node.id) {
+          this.$refs.node.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+            inline: "center"
+          });
+          this.getNodeInfo({
+            node: this.node,
+            parent: this.parent,
+            onLeft: this.onLeft
+          });
+        }
+      }
 
-  updated() {
-    // if (this.nodeStatus.curSelect === this.node.id) {
-    //   this.$refs.node.scrollIntoView({
-    //     behavior: "smooth",
-    //     block: "center",
-    //     inline: "center"
-    //   });
-    //   this.getNodeInfo({
-    //     node: this.node,
-    //     parent: this.parent,
-    //     onLeft: this.onLeft
-    //   });
-    // }
+      //
+      //
+    });
   },
 
   beforeDestroy() {
-    this.id.removeEventListener("click", this.handleSelectNode);
-    this.id.removeEventListener("dblclick", this.handleEditNode);
+    this.$refs.dropArea.removeEventListener("click", this.handleSelectNode);
+    this.$refs.dropArea.removeEventListener("dblclick", this.handleEditNode);
     this.nodeRefs.delete(this.$refs.node);
   },
 
