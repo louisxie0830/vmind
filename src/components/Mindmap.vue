@@ -62,7 +62,14 @@ export default {
     this.$nextTick(() => {
       this.containerRef = this.$parent.$refs;
     });
-    window.addEventListener("keydown", this.handleKeydown, false);
+  },
+
+  updated() {
+    window.addEventListener(
+      "keydown",
+      this.handleKeydown(this.getNodeStatus),
+      false
+    );
     window.addEventListener("click", this.handelClearClick, false);
   },
 
@@ -83,104 +90,99 @@ export default {
       editNode: "editNode"
     }),
 
-    handleKeydown(event) {
+    handleKeydown(nodeStatus) {
       const handleKeyEventWithNode = event => {
         const key = event.key.toUpperCase();
         switch (key) {
           case "TAB":
-            this.addChild({ nodeId: this.getNodeStatus.curSelect });
+            this.addChild({ nodeId: nodeStatus.curSelect });
             break;
 
           case "ENTER":
             event.preventDefault();
             this.addSibling({
-              nodeId: this.getNodeStatus.curSelect,
-              parentId: this.getNodeStatus.curNodeInfo.parent.id
+              nodeId: nodeStatus.curSelect,
+              parentId: nodeStatus.curNodeInfo.parent.id
             });
-            this.selectNode({ nodeId: this.getNodeStatus.curSelect });
             break;
 
           case "F2":
-            this.editNode({ nodeId: this.getNodeStatus.curSelect });
+            this.editNode({ nodeId: nodeStatus.curSelect });
             break;
 
           case "BACKSPACE":
           case "DELETE":
             event.preventDefault();
             this.deleteNode({
-              nodeId: this.getNodeStatus.curSelect,
-              parentId: this.getNodeStatus.curNodeInfo.parent.id
+              nodeId: nodeStatus.curSelect,
+              parentId: nodeStatus.curNodeInfo.parent.id
             });
             break;
 
           case " ":
             this.toggleChildren({
-              nodeId: this.getNodeStatus.curSelect,
-              bool: !this.getNodeStatus.curNodeInfo.showChildren
+              nodeId: nodeStatus.curSelect,
+              bool: !nodeStatus.curNodeInfo.showChildren
             });
             break;
 
           case "ARROWLEFT":
-            if (this.getNodeStatus.curNodeInfo.parent === refer.ROOT_PARENT) {
-              if (this.getNodeStatus.curNodeInfo.children.length > 3) {
+            if (nodeStatus.curNodeInfo.parent === refer.ROOT_PARENT) {
+              if (nodeStatus.curNodeInfo.children.length > 3) {
                 this.selectNode({
-                  nodeId: this.getNodeStatus.curNodeInfo.children[
-                    Math.trunc(
-                      this.getNodeStatus.curNodeInfo.children.length / 2
-                    )
-                  ].id
+                  nodeId:
+                    nodeStatus.curNodeInfo.children[
+                      Math.trunc(nodeStatus.curNodeInfo.children.length / 2)
+                    ].id
                 });
               }
             } else {
-              if (!this.getNodeStatus.curNodeInfo.onLeft) {
+              if (!nodeStatus.curNodeInfo.onLeft) {
                 this.selectNode({
-                  nodeId: this.getNodeStatus.curNodeInfo.parent.id
+                  nodeId: nodeStatus.curNodeInfo.parent.id
                 });
-              } else if (this.getNodeStatus.curNodeInfo.children.length > 0) {
+              } else if (nodeStatus.curNodeInfo.children.length > 0) {
                 this.selectNode({
-                  nodeId: this.getNodeStatus.curNodeInfo.children[0].id
+                  nodeId: nodeStatus.curNodeInfo.children[0].id
                 });
               }
             }
             break;
 
           case "ARROWRIGHT":
-            if (this.getNodeStatus.curNodeInfo.onLeft) {
+            if (nodeStatus.curNodeInfo.onLeft) {
               this.selectNode({
-                nodeId: this.getNodeStatus.curNodeInfo.parent.id
+                nodeId: nodeStatus.curNodeInfo.parent.id
               });
-            } else if (this.getNodeStatus.curNodeInfo.children.length > 0) {
+            } else if (nodeStatus.curNodeInfo.children.length > 0) {
               this.selectNode({
-                nodeId: this.getNodeStatus.curNodeInfo.children[0].id
+                nodeId: nodeStatus.curNodeInfo.children[0].id
               });
             }
             break;
 
           case "ARROWUP": {
-            const curIndex = this.getNodeStatus.curNodeInfo.parent.children.findIndex(
-              ({ id }) => id === this.getNodeStatus.curNodeInfo.id
+            const curIndex = nodeStatus.curNodeInfo.parent.children.findIndex(
+              ({ id }) => id === nodeStatus.curNodeInfo.id
             );
             if (curIndex > 0) {
               this.selectNode({
-                nodeId: this.getNodeStatus.curNodeInfo.parent.children[
-                  curIndex - 1
-                ].id
+                nodeId: nodeStatus.curNodeInfo.parent.children[curIndex - 1].id
               });
             }
             break;
           }
           case "ARROWDOWN":
             {
-              const curIndex = this.getNodeStatus.curNodeInfo.parent.children.findIndex(
-                ({ id }) => id === this.getNodeStatus.curNodeInfo.id
+              const curIndex = nodeStatus.curNodeInfo.parent.children.findIndex(
+                ({ id }) => id === nodeStatus.curNodeInfo.id
               );
               const lastIndex =
-                this.getNodeStatus.curNodeinfo.parent.children.length - 1;
+                nodeStatus.curNodeinfo.parent.children.length - 1;
               if (curIndex < lastIndex) {
                 this.selectNode({
-                  nodeId: this.getNodeStatus.curNodeInfo.parent.children[
-                    curIndex + 1
-                  ].id
+                  nodeId:
+                    nodeStatus.curNodeInfo.parent.children[curIndex + 1].id
                 });
               }
             }
@@ -190,24 +192,28 @@ export default {
             break;
         }
       };
-      if (this.getNodeStatus.curEdit === "") {
-        const isMac = navigator.platform.toUpperCase().startsWith("MAC");
-        const combineKeyPressed = isMac ? event.metaKey : event.ctrlKey;
-        if (combineKeyPressed && event.key.toUpperCase() === "Z") {
-          if (event.shiftKey) {
-            // historyHook.redoHistory();
-          } else {
-            // historyHook.undoHistory();
+      return event => {
+        this.$nextTick(() => {
+          if (nodeStatus.curEdit === "") {
+            const isMac = navigator.platform.toUpperCase().startsWith("MAC");
+            const combineKeyPressed = isMac ? event.metaKey : event.ctrlKey;
+            if (combineKeyPressed && event.key.toUpperCase() === "Z") {
+              if (event.shiftKey) {
+                // historyHook.redoHistory();
+              } else {
+                // historyHook.undoHistory();
+              }
+            }
           }
-        }
-      }
-      if (this.getNodeStatus.cur_select !== "") {
-        try {
-          handleKeyEventWithNode(event);
-        } catch (error) {
-          throw error;
-        }
-      }
+          if (nodeStatus.curSelect !== "") {
+            try {
+              handleKeyEventWithNode(event);
+            } catch (error) {
+              throw error;
+            }
+          }
+        });
+      };
     },
 
     handelClearClick(e) {

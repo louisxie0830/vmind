@@ -58,6 +58,7 @@ export default {
 
     addSibling({ state, commit }, param) {
       const newMindMap = deepCopy(state.mindMap);
+      console.log("newMindMap: ", newMindMap);
       if (param.parentId) {
         const nodeFound = findNode(newMindMap, param.parentId);
         const insertIndex =
