@@ -22,75 +22,24 @@ export default {
 
   watch: {
     flag(val) {
-      this.$nextTick(() => {
-        const dom = this.$el;
-        dom.width = this.parentRef.offsetWidth;
-        dom.height = this.parentRef.offsetHeight;
-        const map = new Map(
-          Array.from(this.nodeRefs).map(ref => [
-            ref.id,
-            [
-              ref.offsetLeft,
-              ref.offsetLeft + ref.offsetWidth,
-              ref.offsetTop + 0.5 * ref.offsetHeight,
-              ref.dataset.tag
-            ]
-          ])
-        );
-        const ctx = dom.getContext("2d");
-        this.drawLineCanvas(ctx, this.theme, this.mindmap, map);
-      });
+      this.updateLine();
     }
   },
 
   created() {
     window.addEventListener("resize", this.handleWindowResize, true);
     this.$nextTick(() => {
-      const dom = this.$el;
-      dom.width = this.parentRef.offsetWidth;
-      dom.height = this.parentRef.offsetHeight;
-      const map = new Map(
-        Array.from(this.nodeRefs).map(ref => [
-          ref.id,
-          [
-            ref.offsetLeft,
-            ref.offsetLeft + ref.offsetWidth,
-            ref.offsetTop + 0.5 * ref.offsetHeight,
-            ref.dataset.tag
-          ]
-        ])
-      );
-      const ctx = dom.getContext("2d");
-      this.drawLineCanvas(ctx, this.theme, this.mindmap, map);
+      this.updateLine();
     });
   },
 
   mounted() {
     this.$store.subscribe((mutation, state) => {
       if (mutation.type === "mindMap/updateMinMapData") {
-        const dom = this.$el;
-        setTimeout(() => {
-          dom.width = this.parentRef.offsetWidth;
-          dom.height = this.parentRef.offsetHeight;
-          const map = new Map(
-            Array.from(this.nodeRefs).map(ref => [
-              ref.id,
-              [
-                ref.offsetLeft,
-                ref.offsetLeft + ref.offsetWidth,
-                ref.offsetTop + 0.5 * ref.offsetHeight,
-                ref.dataset.tag
-              ]
-            ])
-          );
-          const ctx = dom.getContext("2d");
-          this.drawLineCanvas(ctx, this.theme, this.mindmap, map);
-        }, 10);
+        this.updateLine();
       }
     });
   },
-
-  updated() {},
 
   beforeDestroy() {
     window.removeEventListener("resize", this.handleWindowResize);
@@ -154,6 +103,27 @@ export default {
       drawLine(ctx, mindmap, map);
       ctx.stroke();
       ctx.closePath();
+    },
+
+    updateLine() {
+      const dom = this.$el;
+      setTimeout(() => {
+        dom.width = this.parentRef.offsetWidth;
+        dom.height = this.parentRef.offsetHeight;
+        const map = new Map(
+          Array.from(this.nodeRefs).map(ref => [
+            ref.id,
+            [
+              ref.offsetLeft,
+              ref.offsetLeft + ref.offsetWidth,
+              ref.offsetTop + 0.5 * ref.offsetHeight,
+              ref.dataset.tag
+            ]
+          ])
+        );
+        const ctx = dom.getContext("2d");
+        this.drawLineCanvas(ctx, this.theme, this.mindmap, map);
+      }, 10);
     }
   }
 };
