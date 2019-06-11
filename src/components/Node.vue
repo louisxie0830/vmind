@@ -208,6 +208,7 @@ export default {
       this.nodeRefs.add(this.$refs.node);
     });
   },
+
   mounted() {
     this.$store.subscribe((mutation, state) => {
       if (mutation.type === "node/setSelect") {

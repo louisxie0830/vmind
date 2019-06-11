@@ -2,21 +2,21 @@
   <div class="mindMap" ref="mindMap" :id="id">
     <RootNode
       :key="rootNode.id"
-      :nodeRefs="nodeRefs"
+      :nodeRefs.sync="nodeRefs"
       :layer="0"
-      :node="rootNode"
+      :node.sync="rootNode"
     />
     <DragCanvas
       v-if="parentRef && containerRef"
       :parentRef.sync="parentRef"
       :containerRef.sync="containerRef"
-      :mindmap="getMindMap"
+      :mindmap.sync="getMindMap"
     />
     <LineCanvas
       v-if="parentRef && containerRef"
       :parentRef.sync="parentRef"
-      :mindmap="getMindMap"
-      :nodeRefs="nodeRefs"
+      :mindmap.sync="getMindMap"
+      :nodeRefs.sync="nodeRefs"
     />
   </div>
 </template>

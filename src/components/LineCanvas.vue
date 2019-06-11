@@ -23,6 +23,10 @@ export default {
   watch: {
     flag(val) {
       this.updateLine();
+    },
+
+    mindmap(val) {
+      this.updateLine();
     }
   },
 
@@ -106,10 +110,11 @@ export default {
     },
 
     updateLine() {
-      const dom = this.$el;
       setTimeout(() => {
+        const dom = this.$el;
         dom.width = this.parentRef.offsetWidth;
         dom.height = this.parentRef.offsetHeight;
+
         const map = new Map(
           Array.from(this.nodeRefs).map(ref => [
             ref.id,
@@ -123,7 +128,7 @@ export default {
         );
         const ctx = dom.getContext("2d");
         this.drawLineCanvas(ctx, this.theme, this.mindmap, map);
-      }, 10);
+      }, 0);
     }
   }
 };

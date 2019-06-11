@@ -8,16 +8,17 @@
       :onLeft="onLeft"
     />
     <div>
-      <SubNode
-        v-show="node && node.showChildren"
-        v-for="item in node.children"
-        :key="item.id"
-        :layer="layer + 1"
-        :node="item"
-        :nodeRefs="nodeRefs"
-        :parent="node"
-        :onLeft="onLeft"
-      />
+      <template v-for="item in node.children">
+        <SubNode
+          v-if="node && node.showChildren"
+          :key="item.id"
+          :layer="layer + 1"
+          :node="item"
+          :nodeRefs="nodeRefs"
+          :parent="node"
+          :onLeft="onLeft"
+        />
+      </template>
     </div>
   </div>
 </template>

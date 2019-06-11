@@ -28,6 +28,7 @@ export default {
   watch: {
     flag(val) {
       this.updateDragEvents();
+      this.updateDomStyle();
     }
   },
 
@@ -111,6 +112,7 @@ export default {
           listener: event => {
             resetVariables();
             container.addEventListener("scroll", handleContainerScroll);
+
             if (
               event.target &&
               (event.target.dataset.tag === refer.LEFT_NODE ||
@@ -319,6 +321,12 @@ export default {
           window.addEventListener(event.type, event.listener)
         );
       }
+    },
+
+    updateDomStyle() {
+      const dom = this.$el;
+      dom.width = this.parentRef.offsetWidth;
+      dom.height = this.parentRef.offsetHeight;
     }
   }
 };

@@ -113,7 +113,6 @@ const actions = {
   },
 
   moveNode({ dispatch }, param) {
-    console.log("param: ", param);
     dispatch("mindMap/moveNode", {
       nodeId: param.nodeId,
       targetId: param.targetId,

@@ -122,7 +122,7 @@ export default {
 
   mutations: {
     updateMinMapData(state, data) {
-      state.mindMap = { ...state.mindMap, ...data };
+      state.mindMap = data;
     }
   }
 };
