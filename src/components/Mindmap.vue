@@ -40,7 +40,8 @@ export default {
       containerRef: null,
       parentRef: null,
       id: refer.MINDMAP_ID,
-      nodeRefs: new Set()
+      nodeRefs: new Set(),
+      handleKeydown: null
     };
   },
   computed: {
@@ -65,16 +66,29 @@ export default {
     this.$nextTick(() => {
       this.parentRef = this.$refs.mindMap;
       this.containerRef = this.$parent.$refs;
+      this.handleKeydown = this.getKeydownEvent(this.getNodeStatus);
+      window.addEventListener("click", this.handelClearClick, false);
+      window.addEventListener("keydown", this.handleKeydown, false);
     });
   },
 
-  updated() {
-    window.addEventListener(
-      "keydown",
-      this.handleKeydown(this.getNodeStatus),
-      false
-    );
-    window.addEventListener("click", this.handelClearClick, false);
+  mounted() {
+    this.$store.subscribe((mutation, state) => {
+      window.removeEventListener("keydown", this.handleKeydown);
+
+      if (
+        mutation.type === "node/setSelect" ||
+        mutation.type === " node/setEdit" ||
+        mutation.type === "node/getNodeInfo"
+      ) {
+        this.handleKeydown = this.getKeydownEvent(this.getNodeStatus);
+        window.addEventListener("keydown", this.handleKeydown, false);
+      }
+    });
+  },
+
+  beforeDestroy() {
+    window.removeEventListener("click", this.handelClearClick);
   },
 
   methods: {
@@ -94,9 +108,10 @@ export default {
       editNode: "editNode"
     }),
 
-    handleKeydown(nodeStatus) {
+    getKeydownEvent(nodeStatus) {
       const handleKeyEventWithNode = event => {
         const key = event.key.toUpperCase();
+
         switch (key) {
           case "TAB":
             this.addChild({ nodeId: nodeStatus.curSelect });

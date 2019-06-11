@@ -39,7 +39,8 @@ export default {
   methods: {
     ...mapActions({
       changeText: "changeText",
-      selectNode: "selectNode"
+      selectNode: "selectNode",
+      clearNodeStatus: "clearNodeStatus"
     }),
 
     handleKeydown(event) {
@@ -47,6 +48,8 @@ export default {
         this.$refs.inputDiv.textContent = this.children;
       }
       if (event.key.toUpperCase() === "ENTER") {
+        event.preventDefault();
+
         this.changeText({
           nodeId: this.nodeId,
           text: this.$refs.inputDiv.textContent
@@ -56,9 +59,9 @@ export default {
     },
 
     handleBlur(e) {
-      this.$nextTick(() => {
-        this.selectNode({ nodeId: this.nodeId });
-      });
+      e.preventDefault();
+      this.selectNode({ nodeId: this.nodeId });
+      this.clearNodeStatus();
     },
     handlePropagation: handlePropagation
   }
