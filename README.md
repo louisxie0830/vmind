@@ -1,4 +1,4 @@
-# vue-rmind
+# vue-mind
 
 ## Project setup
 ```
